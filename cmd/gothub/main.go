@@ -93,7 +93,7 @@ Simple CLI for tracking public GitHub repositories.
 
 Usage:
   %[1]s help
-  %[1]s track [-interval=<interval>]
+  %[1]s track [-interval=<interval>] [-token-file=<file>] [-min-stars=<int>]
 
 Commands:
   help  Show usage information
@@ -102,6 +102,7 @@ Commands:
 Options:
   -interval=<interval> Repository update interval, greater than zero [default: 10s]
   -token-file=<file> File containing a GitHub token to be used for authentication
+  -min-stars=<int> The minimum number of stars that the tracked repositories must have
 `
 		fmt.Fprintf(os.Stdout, usage, name)
 		return nil
