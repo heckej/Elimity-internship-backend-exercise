@@ -127,7 +127,7 @@ Options:
 			log(err.Error())
 		}
 
-		if err := internal.Track(interval, minStars); err != nil {
+		if err := internal.Track(interval, token, minStars); err != nil {
 			return fmt.Errorf("failed tracking: %v", err)
 		}
 		return nil
