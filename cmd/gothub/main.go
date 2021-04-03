@@ -16,6 +16,9 @@ var args = os.Args
 
 var name = makeName()
 
+// command-line flags
+var interval time.Duration
+
 func log(message string) {
 	fmt.Fprintf(os.Stderr, "%s: %s\n", name, message)
 }
@@ -36,15 +39,20 @@ func makeName() string {
 	return filepath.Base(path)
 }
 
-func parseInterval() (time.Duration, error) {
+func parseFlags() error {
 	set := flag.NewFlagSet("", flag.ContinueOnError)
-	var interval time.Duration
 	set.DurationVar(&interval, "interval", 10*time.Second, "")
+	set.StringVar(&tokenFilePath, "token-file", "", "")
+	set.IntVar(&minStars, "min-stars", 0, "")
 	set.SetOutput(ioutil.Discard)
+
 	args := args[2:]
 	if err := set.Parse(args); err != nil {
-		return 0, errors.New("got invalid flags")
+		return errors.New("got invalid flags")
 	}
+}
+
+func parseInterval() (time.Duration, error) {
 	if interval <= 0 {
 		return 0, errors.New("got invalid interval")
 	}
@@ -75,10 +83,15 @@ Options:
 		return nil
 
 	case "track":
+		err := parseFlags()
+		if err != nil {
+			log(err.Error())
+		}
+
 		interval, err := parseInterval()
 		if err != nil {
-			message := fmt.Sprintf("failed parsing interval: %v", err)
-			return usageError{message: message}
+			log(err.Error())
+		
 		}
 		if err := internal.Track(interval); err != nil {
 			return fmt.Errorf("failed tracking: %v", err)
