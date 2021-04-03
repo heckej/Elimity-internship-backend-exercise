@@ -100,13 +100,14 @@ Options:
 		interval, err := parseInterval()
 		if err != nil {
 			log(err.Error())
-		
 		}
-		if err := internal.Track(interval); err != nil {
+
 		minStars, err := parseMinStars()
 		if err != nil {
 			log(err.Error())
 		}
+
+		if err := internal.Track(interval, minStars); err != nil {
 			return fmt.Errorf("failed tracking: %v", err)
 		}
 		return nil

@@ -11,8 +11,9 @@ import (
 // Track tracks public GitHub repositories, continuously updating according to the given interval.
 //
 // The given interval must be greater than zero.
-func Track(interval time.Duration) error {
+func Track(interval time.Duration, minStars int) error {
 	for ; ; <-time.Tick(interval) {
+		fmt.Println("Selecting updated repo's with >= " + fmt.Sprint(minStars) + " stars.")
 		client := github.NewClient(nil)
 		con := context.Background()
 		listOptions := github.ListOptions{PerPage: 3}
@@ -22,7 +23,9 @@ func Track(interval time.Duration) error {
 			return err
 		}
 		for _, repository := range result.Repositories {
-			fmt.Println(*repository.Name)
+			if *repository.StargazersCount >= minStars {
+				fmt.Println(*repository.Name)
+			}
 		}
 	}
 }
