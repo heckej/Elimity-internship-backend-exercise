@@ -18,6 +18,7 @@ var name = makeName()
 
 // command-line flags
 var interval time.Duration
+var tokenFilePath string
 
 func log(message string) {
 	fmt.Fprintf(os.Stderr, "%s: %s\n", name, message)
@@ -59,6 +60,19 @@ func parseInterval() (time.Duration, error) {
 	return interval, nil
 }
 
+func parseTokenFile() (string, error) {
+	_, err := os.Stat(tokenFilePath)
+	if os.IsNotExist(err) && tokenFilePath != "" {
+		return "", errors.New("got non-existing token-file")
+	}
+	token, err := internal.ReadTokenFromFile(tokenFilePath)
+	if err != nil {
+		message := fmt.Sprintf("failed reading token from %v: %v", tokenFilePath, err)
+		return "", usageError{message: message}
+	}
+	return token, nil
+}
+
 func run() error {
 	if nbArgs := len(args); nbArgs < 2 {
 		return usageError{message: "missing command"}
@@ -78,6 +92,7 @@ Commands:
 
 Options:
   -interval=<interval> Repository update interval, greater than zero [default: 10s]
+  -token-file=<file> File containing a GitHub token to be used for authentication
 `
 		fmt.Fprintf(os.Stdout, usage, name)
 		return nil
@@ -92,6 +107,10 @@ Options:
 		if err != nil {
 			log(err.Error())
 		
+
+		token, err := parseTokenFile()
+		if err != nil {
+			log(err.Error())
 		}
 		if err := internal.Track(interval); err != nil {
 			return fmt.Errorf("failed tracking: %v", err)
