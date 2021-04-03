@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/google/go-github/v33/github"
+	"golang.org/x/oauth2"
 )
 
 // Track tracks public GitHub repositories, continuously updating according to the given interval.
@@ -16,7 +17,10 @@ func Track(interval time.Duration, token string, minStars int) error {
 		con := context.Background()
 		client := github.NewClient(nil)
 		if token != "" {
-			fmt.Println("Token provided: " + token)
+			fmt.Println("Token provided. Using authenticated requests.")
+			tokenSource := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
+			authenticationClient := oauth2.NewClient(con, tokenSource)
+			client = github.NewClient(authenticationClient)
 		} else {
 			fmt.Println("No token provided. Using anonymous requests.")
 		}
