@@ -40,6 +40,6 @@ func Track(interval time.Duration, token string, minStars int) error {
 			}
 		}
 
-		PrintAsTable(filteredRepositories)
+		printAsTable(filteredRepositories)
 	}
 }

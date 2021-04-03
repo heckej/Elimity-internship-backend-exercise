@@ -6,15 +6,7 @@ import (
 	"github.com/google/go-github/v33/github"
 )
 
-type columnWidth struct {
-	owner, name, updated, stars int
-}
-
-type rowValues struct {
-	owner, name, updated, stars string
-}
-
-func PrintAsTable(repositories []*github.Repository) {
+func printAsTable(repositories []*github.Repository) {
 	headerValues := rowValues{
 		owner:   "Owner",
 		name:    "Name",
@@ -22,27 +14,27 @@ func PrintAsTable(repositories []*github.Repository) {
 		stars:   "Star count",
 	}
 	rows := []rowValues{headerValues}
-	repositoryValues := RepositoriesToValues(repositories)
+	repositoryValues := repositoriesToValues(repositories)
 	rows = append(rows, repositoryValues...)
-	colWidths := CalculateColumnWidths(rows)
+	colWidths := calculateColumnWidths(rows)
 	for _, row := range rows {
-		PrintAsTableRow(row, colWidths)
+		printAsTableRow(row, colWidths)
 	}
 }
 
-func PrintAsTableRow(values rowValues, colWidths columnWidth) {
+func printAsTableRow(values rowValues, colWidths columnWidth) {
 	tableBorder := " | "
-	PrintColumn("", values.owner, colWidths.owner, "")
-	PrintColumn(tableBorder, values.name, colWidths.name, "")
-	PrintColumn(tableBorder, values.updated, colWidths.updated, "")
-	PrintColumn(tableBorder, values.stars, colWidths.stars, "\n")
+	printColumn("", values.owner, colWidths.owner, "")
+	printColumn(tableBorder, values.name, colWidths.name, "")
+	printColumn(tableBorder, values.updated, colWidths.updated, "")
+	printColumn(tableBorder, values.stars, colWidths.stars, "\n")
 }
 
-func PrintColumn(start string, value string, colWidth int, end string) {
+func printColumn(start string, value string, colWidth int, end string) {
 	fmt.Printf("%v%-"+fmt.Sprint(colWidth)+"v%v", start, value, end)
 }
 
-func RepositoriesToValues(repositories []*github.Repository) []rowValues {
+func repositoriesToValues(repositories []*github.Repository) []rowValues {
 	repositoryValues := []rowValues{}
 	for _, repository := range repositories {
 		var owner string = ""
@@ -66,13 +58,13 @@ func RepositoriesToValues(repositories []*github.Repository) []rowValues {
 	return repositoryValues
 }
 
-func CalculateColumnWidths(rows []rowValues) columnWidth {
+func calculateColumnWidths(rows []rowValues) columnWidth {
 	maxOwnerLength, maxNameLength, maxUpdatedLength, maxStarsLength := 0, 0, 0, 0
 	for _, row := range rows {
-		maxOwnerLength = Max(maxOwnerLength, len(row.owner))
-		maxNameLength = Max(maxNameLength, len(row.name))
-		maxUpdatedLength = Max(maxUpdatedLength, len(row.updated))
-		maxStarsLength = Max(maxStarsLength, len(row.stars))
+		maxOwnerLength = max(maxOwnerLength, len(row.owner))
+		maxNameLength = max(maxNameLength, len(row.name))
+		maxUpdatedLength = max(maxUpdatedLength, len(row.updated))
+		maxStarsLength = max(maxStarsLength, len(row.stars))
 	}
 	colWidths := columnWidth{
 		owner:   maxOwnerLength,
@@ -83,9 +75,17 @@ func CalculateColumnWidths(rows []rowValues) columnWidth {
 	return colWidths
 }
 
-func Max(a int, b int) int {
+func max(a int, b int) int {
 	if a > b {
 		return a
 	}
 	return b
+}
+
+type columnWidth struct {
+	owner, name, updated, stars int
+}
+
+type rowValues struct {
+	owner, name, updated, stars string
 }
