@@ -19,6 +19,7 @@ var name = makeName()
 // command-line flags
 var interval time.Duration
 var tokenFilePath string
+var minStars int
 
 func log(message string) {
 	fmt.Fprintf(os.Stderr, "%s: %s\n", name, message)
@@ -51,6 +52,7 @@ func parseFlags() error {
 	if err := set.Parse(args); err != nil {
 		return errors.New("got invalid flags")
 	}
+	return nil
 }
 
 func parseInterval() (time.Duration, error) {
@@ -71,6 +73,13 @@ func parseTokenFile() (string, error) {
 		return "", usageError{message: message}
 	}
 	return token, nil
+}
+
+func parseMinStars() (int, error) {
+	if minStars < 0 {
+		return 0, errors.New("got invalid min-stars")
+	}
+	return minStars, nil
 }
 
 func run() error {
@@ -106,13 +115,19 @@ Options:
 		interval, err := parseInterval()
 		if err != nil {
 			log(err.Error())
-		
-
+        }
+        
 		token, err := parseTokenFile()
 		if err != nil {
 			log(err.Error())
 		}
-		if err := internal.Track(interval); err != nil {
+
+		minStars, err := parseMinStars()
+		if err != nil {
+			log(err.Error())
+		}
+
+		if err := internal.Track(interval, minStars); err != nil {
 			return fmt.Errorf("failed tracking: %v", err)
 		}
 		return nil
