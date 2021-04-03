@@ -51,6 +51,7 @@ func parseFlags() error {
 	if err := set.Parse(args); err != nil {
 		return errors.New("got invalid flags")
 	}
+	return nil
 }
 
 func parseInterval() (time.Duration, error) {
