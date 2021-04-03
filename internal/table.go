@@ -14,7 +14,7 @@ func printAsTable(repositories []*github.Repository) {
 		stars:   "Star count",
 	}
 	rows := []rowValues{headerValues}
-	repositoryValues := repositoriesToValues(repositories)
+	repositoryValues := repositoriesToRowValues(repositories)
 	rows = append(rows, repositoryValues...)
 	colWidths := calculateColumnWidths(rows)
 	for _, row := range rows {
@@ -34,7 +34,7 @@ func printColumn(start string, value string, colWidth int, end string) {
 	fmt.Printf("%v%-"+fmt.Sprint(colWidth)+"v%v", start, value, end)
 }
 
-func repositoriesToValues(repositories []*github.Repository) []rowValues {
+func repositoriesToRowValues(repositories []*github.Repository) []rowValues {
 	repositoryValues := []rowValues{}
 	for _, repository := range repositories {
 		var owner string = ""
