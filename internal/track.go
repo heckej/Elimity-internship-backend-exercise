@@ -130,10 +130,15 @@ func Track(interval time.Duration, token string, minStars int) error {
 		if err != nil {
 			return err
 		}
+
+		filteredRepositories := []*github.Repository{}
+
 		for _, repository := range result.Repositories {
 			if *repository.StargazersCount >= minStars {
-				fmt.Println(*repository.Name)
+				filteredRepositories = append(filteredRepositories, repository)
 			}
 		}
+
+		PrintAsTable(filteredRepositories)
 	}
 }
