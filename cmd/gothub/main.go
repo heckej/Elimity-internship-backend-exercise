@@ -18,6 +18,7 @@ var name = makeName()
 
 // command-line flags
 var interval time.Duration
+var minStars int
 
 func log(message string) {
 	fmt.Fprintf(os.Stderr, "%s: %s\n", name, message)
@@ -59,6 +60,13 @@ func parseInterval() (time.Duration, error) {
 	return interval, nil
 }
 
+func parseMinStars() (int, error) {
+	if minStars <= 0 {
+		return 0, errors.New("got invalid min-stars")
+	}
+	return minStars, nil
+}
+
 func run() error {
 	if nbArgs := len(args); nbArgs < 2 {
 		return usageError{message: "missing command"}
@@ -94,6 +102,10 @@ Options:
 		
 		}
 		if err := internal.Track(interval); err != nil {
+		minStars, err := parseMinStars()
+		if err != nil {
+			log(err.Error())
+		}
 			return fmt.Errorf("failed tracking: %v", err)
 		}
 		return nil
