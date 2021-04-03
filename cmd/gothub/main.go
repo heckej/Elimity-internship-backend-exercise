@@ -115,8 +115,8 @@ Options:
 		interval, err := parseInterval()
 		if err != nil {
 			log(err.Error())
-        }
-        
+		}
+
 		token, err := parseTokenFile()
 		if err != nil {
 			log(err.Error())
