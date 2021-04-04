@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"fmt"
 	"io/ioutil"
 )
 
@@ -11,9 +10,7 @@ import (
 func ReadTokenFromFile(filePath string) (string, error) {
 	data, err := ioutil.ReadFile(filePath)
 	if err != nil {
-		fmt.Println("File reading error", err)
 		return "", err
 	}
-	fmt.Println("Contents of file:", string(data))
 	return string(data), nil
 }
