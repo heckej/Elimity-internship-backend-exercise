@@ -18,7 +18,7 @@ Simple CLI for tracking public GitHub repositories.
 
 Usage:
   gothub help
-  gothub track [-interval=<interval>]
+  gothub track [-interval=<interval>] [-token-file=<file>] [-min-stars=<integer>]
 
 Commands:
   help  Show usage information
@@ -26,6 +26,8 @@ Commands:
 
 Options:
   -interval=<interval> Repository update interval, greater than zero [default: 10s]
+  -token-file=<file> Path to a file containing a GitHub token to be used for authentication, ignored if empty
+  -min-stars=<integer> The minimum positive number of stars that the tracked repositories must have [default: 0]
 ```
 
 ## Assignments
