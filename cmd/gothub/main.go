@@ -104,8 +104,8 @@ Commands:
 
 Options:
   -interval=<interval> Repository update interval, greater than zero [default: 10s]
-  -token-file=<file> Path to a file containing a GitHub token to be used for authentication
-  -min-stars=<integer> The minimum number of stars that the tracked repositories must have
+  -token-file=<file> Path to a file containing a GitHub token to be used for authentication, ignored if empty
+  -min-stars=<integer> The minimum positive number of stars that the tracked repositories must have [default: 0]
 `
 		fmt.Fprintf(os.Stdout, usage, name)
 		return nil
