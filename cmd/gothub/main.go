@@ -67,12 +67,15 @@ func parseTokenFile() (string, error) {
 	if os.IsNotExist(err) && tokenFilePath != "" {
 		return "", errors.New("got non-existing token-file")
 	}
-	token, err := internal.ReadTokenFromFile(tokenFilePath)
-	if err != nil {
-		message := fmt.Sprintf("failed reading token from %v: %v", tokenFilePath, err)
-		return "", usageError{message: message}
+	if tokenFilePath != "" {
+		token, err := internal.ReadTokenFromFile(tokenFilePath)
+		if err != nil {
+			message := fmt.Sprintf("failed reading token from %v: %v", tokenFilePath, err)
+			return "", usageError{message: message}
+		}
+		return token, nil
 	}
-	return token, nil
+	return "", nil
 }
 
 func parseMinStars() (int, error) {
