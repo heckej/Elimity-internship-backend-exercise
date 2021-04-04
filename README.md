@@ -1,17 +1,13 @@
-# Elimity backend internship exercise
+# Solution to Elimity backend internship exercise 2021
 
-Thank you for applying for the **Elimity Backend Developer Intern** position! This exercise is designed to give you an
-opportunity to show off your programming skills that would be relevant to work at Elimity, and to give you an idea of
-what type of work you would be doing during your internship. The code in this repository provides a Go module as a
-starting point for the assignments. It implements `gothub`, a simple CLI for tracking public GitHub repositories. The
-actual assignments are listed below.
+This repository contains my solution to the backend programming exercise for an internship at Elimity. See the [Elimity exercise template](https://github.com/elimity-com/backend-intern-exercise) for the assignment.
 
 ## Installation
 
-The `gothub` CLI can be installed using `go get` with Go 1.16+:
+The `gothub` CLI of this solution can be installed using `go get` with Go 1.16+:
 
 ```sh
-$ go get github.com/elimity-com/backend-intern-exercise/cmd/gothub
+$ go get github.com/heckej/Elimity-internship-backend-exercise/cmd/gothub
 ```
 
 ## Usage
