@@ -9,9 +9,11 @@ import (
 	"golang.org/x/oauth2"
 )
 
-// Track tracks public GitHub repositories, continuously updating according to the given interval.
+// Track tracks public GitHub repositories that have at least minStars stars, continuously updating according to the given interval.
 //
 // The given interval must be greater than zero.
+// If the given token is non-empty, it is used for authenticated requests. Otherwise, it is ignored.
+// The given minStars must be non-negative.
 func Track(interval time.Duration, token string, minStars int) error {
 	for ; ; <-time.Tick(interval) {
 		con := context.Background()
