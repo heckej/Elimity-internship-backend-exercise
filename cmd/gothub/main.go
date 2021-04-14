@@ -59,15 +59,15 @@ func validateInterval(flags flagSet) error {
 }
 
 func parseTokenFile(flags flagSet) (string, error) {
-	if flags.tokenFilePath != "" {
-		token, err := internal.ReadTokenFromFile(flags.tokenFilePath)
-		if err != nil {
-			message := fmt.Sprintf("failed reading token from %v: %v", flags.tokenFilePath, err)
-			return "", usageError{message: message}
-		}
-		return token, nil
+	if flags.tokenFilePath == "" {
+		return "", nil
 	}
-	return "", nil
+	token, err := internal.ReadTokenFromFile(flags.tokenFilePath)
+	if err != nil {
+		message := fmt.Sprintf("failed reading token from %v: %v", flags.tokenFilePath, err)
+		return "", usageError{message: message}
+	}
+	return token, nil
 }
 
 func validateMinStars(flags flagSet) error {
