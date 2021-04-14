@@ -16,11 +16,6 @@ var args = os.Args
 
 var name = makeName()
 
-// command-line flags
-var interval time.Duration
-var tokenFilePath string
-var minStars int
-
 func log(message string) {
 	fmt.Fprintf(os.Stderr, "%s: %s\n", name, message)
 }
