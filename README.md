@@ -33,4 +33,4 @@ Options:
 ## Dependencies
 
 * To make use of authenticated requests, the `oauth2` library is imported, as described in the manual of the [`go-github` repository](https://github.com/google/go-github#authentication).
-* For pretty printing of the table with repositories, the `text/tabwriter` is used.
+* For pretty printing of the table with repositories, the `text/tabwriter` library is used.
