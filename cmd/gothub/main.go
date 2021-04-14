@@ -63,10 +63,6 @@ func parseInterval() (time.Duration, error) {
 }
 
 func parseTokenFile() (string, error) {
-	_, err := os.Stat(tokenFilePath)
-	if os.IsNotExist(err) && tokenFilePath != "" {
-		return "", errors.New("got non-existing token-file")
-	}
 	if tokenFilePath != "" {
 		token, err := internal.ReadTokenFromFile(tokenFilePath)
 		if err != nil {
