@@ -29,19 +29,13 @@ func Track(interval time.Duration, token string, minStars int) error {
 		fmt.Println("Selecting updated repo's with >=", minStars, "stars.")
 		listOptions := github.ListOptions{PerPage: 3}
 		searchOptions := &github.SearchOptions{ListOptions: listOptions, Sort: "updated"}
-		result, _, err := client.Search.Repositories(con, "is:public", searchOptions)
+		query := fmt.Sprint("is:public stars:>=", minStars)
+
+		result, _, err := client.Search.Repositories(con, query, searchOptions)
 		if err != nil {
 			return err
 		}
 
-		filteredRepositories := []*github.Repository{}
-
-		for _, repository := range result.Repositories {
-			if *repository.StargazersCount >= minStars {
-				filteredRepositories = append(filteredRepositories, repository)
-			}
-		}
-
-		printAsTable(filteredRepositories)
+		printAsTable(result.Repositories)
 	}
 }
