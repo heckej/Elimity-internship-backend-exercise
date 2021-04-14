@@ -113,22 +113,22 @@ Options:
 	case "track":
 		err := parseFlags()
 		if err != nil {
-			log(err.Error())
+			return err
 		}
 
 		interval, err := parseInterval()
 		if err != nil {
-			log(err.Error())
+			return err
 		}
 
 		token, err := parseTokenFile()
 		if err != nil {
-			log(err.Error())
+			return err
 		}
 
 		minStars, err := parseMinStars()
 		if err != nil {
-			log(err.Error())
+			return err
 		}
 
 		if err := internal.Track(interval, token, minStars); err != nil {
