@@ -25,15 +25,13 @@ func printAsTable(repositories []*github.Repository) {
 }
 
 func GetOwnerOrOrganisation(repository *github.Repository) string {
-	var owner string = ""
 	repoOrganisation := repository.GetOrganization()
 	if repoOrganisation.GetName() != "" {
-		owner = repoOrganisation.GetName()
+		return repoOrganisation.GetName()
 	} else {
-		var repoOwner = repository.GetOwner()
-		owner = repoOwner.GetLogin()
+		repoOwner := repository.GetOwner()
+		return repoOwner.GetLogin()
 	}
-	return owner
 }
 
 func GetFormattedUpdatedTime(repository *github.Repository) string {
