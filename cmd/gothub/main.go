@@ -16,11 +16,6 @@ var args = os.Args
 
 var name = makeName()
 
-// command-line flags
-var interval time.Duration
-var tokenFilePath string
-var minStars int
-
 func log(message string) {
 	fmt.Fprintf(os.Stderr, "%s: %s\n", name, message)
 }
@@ -41,36 +36,33 @@ func makeName() string {
 	return filepath.Base(path)
 }
 
-func parseFlags() error {
+func parseFlags() (flagSet, error) {
+	flags := flagSet{}
 	set := flag.NewFlagSet("", flag.ContinueOnError)
-	set.DurationVar(&interval, "interval", 10*time.Second, "")
-	set.StringVar(&tokenFilePath, "token-file", "", "")
-	set.IntVar(&minStars, "min-stars", 0, "")
+	set.DurationVar(&flags.interval, "interval", 10*time.Second, "")
+	set.StringVar(&flags.tokenFilePath, "token-file", "", "")
+	set.IntVar(&flags.minStars, "min-stars", 0, "")
 	set.SetOutput(ioutil.Discard)
 
 	args := args[2:]
 	if err := set.Parse(args); err != nil {
-		return errors.New("got invalid flags")
+		return flags, errors.New("got invalid flags")
+	}
+	return flags, nil
+}
+
+func parseInterval(flags flagSet) error {
+	if flags.interval <= 0 {
+		return errors.New("got invalid interval")
 	}
 	return nil
 }
 
-func parseInterval() (time.Duration, error) {
-	if interval <= 0 {
-		return 0, errors.New("got invalid interval")
-	}
-	return interval, nil
-}
-
-func parseTokenFile() (string, error) {
-	_, err := os.Stat(tokenFilePath)
-	if os.IsNotExist(err) && tokenFilePath != "" {
-		return "", errors.New("got non-existing token-file")
-	}
-	if tokenFilePath != "" {
-		token, err := internal.ReadTokenFromFile(tokenFilePath)
+func parseTokenFile(flags flagSet) (string, error) {
+	if flags.tokenFilePath != "" {
+		token, err := internal.ReadTokenFromFile(flags.tokenFilePath)
 		if err != nil {
-			message := fmt.Sprintf("failed reading token from %v: %v", tokenFilePath, err)
+			message := fmt.Sprintf("failed reading token from %v: %v", flags.tokenFilePath, err)
 			return "", usageError{message: message}
 		}
 		return token, nil
@@ -78,11 +70,11 @@ func parseTokenFile() (string, error) {
 	return "", nil
 }
 
-func parseMinStars() (int, error) {
-	if minStars < 0 {
-		return 0, errors.New("got invalid min-stars")
+func parseMinStars(flags flagSet) error {
+	if flags.minStars < 0 {
+		return errors.New("got invalid min-stars")
 	}
-	return minStars, nil
+	return nil
 }
 
 func run() error {
@@ -111,27 +103,25 @@ Options:
 		return nil
 
 	case "track":
-		err := parseFlags()
+		flags, err := parseFlags()
 		if err != nil {
-			log(err.Error())
+			return err
 		}
 
-		interval, err := parseInterval()
-		if err != nil {
-			log(err.Error())
+		if err := parseInterval(flags); err != nil {
+			return err
 		}
 
-		token, err := parseTokenFile()
-		if err != nil {
-			log(err.Error())
+		if err := parseMinStars(flags); err != nil {
+			return err
 		}
 
-		minStars, err := parseMinStars()
+		token, err := parseTokenFile(flags)
 		if err != nil {
-			log(err.Error())
+			return err
 		}
 
-		if err := internal.Track(interval, token, minStars); err != nil {
+		if err := internal.Track(flags.interval, token, flags.minStars); err != nil {
 			return fmt.Errorf("failed tracking: %v", err)
 		}
 		return nil
@@ -139,6 +129,12 @@ Options:
 	default:
 		return usageError{message: "got invalid command"}
 	}
+}
+
+type flagSet struct {
+	interval      time.Duration
+	tokenFilePath string
+	minStars      int
 }
 
 type usageError struct {
