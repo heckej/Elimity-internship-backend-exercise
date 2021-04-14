@@ -2,24 +2,43 @@ package internal
 
 import (
 	"fmt"
+	"os"
+	"text/tabwriter"
 
 	"github.com/google/go-github/v33/github"
 )
 
 func printAsTable(repositories []*github.Repository) {
-	headerValues := rowValues{
-		owner:   "Owner",
-		name:    "Name",
-		updated: "Updated at (UTC)",
-		stars:   "Star count",
+	const padding = 1
+	w := tabwriter.NewWriter(os.Stdout, 0, 0, padding, ' ', tabwriter.Debug)
+	fmt.Fprintln(w, "Owner\t Name\t Updated at (UTC)\t Star count")
+
+	for _, repository := range repositories {
+		owner := GetOwnerOrOrganisation(repository)
+		updated := GetFormattedUpdatedTime(repository)
+		name := repository.GetName()
+		stars := repository.GetStargazersCount()
+		fmt.Fprintln(w, owner, "\t", name, "\t", updated, "\t", stars)
 	}
-	rows := []rowValues{headerValues}
-	repositoryValues := repositoriesToRowValues(repositories)
-	rows = append(rows, repositoryValues...)
-	colWidths := calculateColumnWidths(rows)
-	for _, row := range rows {
-		printAsTableRow(row, colWidths)
+
+	w.Flush()
+}
+
+func GetOwnerOrOrganisation(repository *github.Repository) string {
+	var owner string = ""
+	repoOrganisation := repository.GetOrganization()
+	if repoOrganisation.GetName() != "" {
+		owner = repoOrganisation.GetName()
+	} else {
+		var repoOwner = repository.GetOwner()
+		owner = repoOwner.GetLogin()
 	}
+	return owner
+}
+
+func GetFormattedUpdatedTime(repository *github.Repository) string {
+	updatedTime := repository.GetUpdatedAt()
+	return updatedTime.Time.Format("2006-01-02T15:04:05")
 }
 
 func printAsTableRow(values rowValues, colWidths columnWidth) {
