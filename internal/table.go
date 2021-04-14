@@ -14,11 +14,11 @@ func printAsTable(repositories []*github.Repository) {
 	fmt.Fprintln(w, "Owner\t Name\t Updated at (UTC)\t Star count")
 
 	for _, repository := range repositories {
-		owner := getOwnerOrOrganisation(repository)
-		updated := getFormattedUpdatedTime(repository)
-		name := repository.GetName()
-		stars := repository.GetStargazersCount()
-		fmt.Fprintln(w, owner, "\t", name, "\t", updated, "\t", stars)
+		fmt.Fprintln(w,
+			getOwnerOrOrganisation(repository), "\t",
+			repository.GetName(), "\t",
+			getFormattedUpdatedTime(repository), "\t",
+			repository.GetStargazersCount())
 	}
 
 	w.Flush()
