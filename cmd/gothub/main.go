@@ -137,6 +137,12 @@ Options:
 	}
 }
 
+type flagSet struct {
+	interval      time.Duration
+	tokenFilePath string
+	minStars      int
+}
+
 type usageError struct {
 	message string
 }
