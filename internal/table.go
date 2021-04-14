@@ -14,8 +14,8 @@ func printAsTable(repositories []*github.Repository) {
 	fmt.Fprintln(w, "Owner\t Name\t Updated at (UTC)\t Star count")
 
 	for _, repository := range repositories {
-		owner := GetOwnerOrOrganisation(repository)
-		updated := GetFormattedUpdatedTime(repository)
+		owner := getOwnerOrOrganisation(repository)
+		updated := getFormattedUpdatedTime(repository)
 		name := repository.GetName()
 		stars := repository.GetStargazersCount()
 		fmt.Fprintln(w, owner, "\t", name, "\t", updated, "\t", stars)
@@ -24,7 +24,7 @@ func printAsTable(repositories []*github.Repository) {
 	w.Flush()
 }
 
-func GetOwnerOrOrganisation(repository *github.Repository) string {
+func getOwnerOrOrganisation(repository *github.Repository) string {
 	repoOrganisation := repository.GetOrganization()
 	if repoOrganisation.GetName() != "" {
 		return repoOrganisation.GetName()
@@ -34,7 +34,7 @@ func GetOwnerOrOrganisation(repository *github.Repository) string {
 	}
 }
 
-func GetFormattedUpdatedTime(repository *github.Repository) string {
+func getFormattedUpdatedTime(repository *github.Repository) string {
 	updatedTime := repository.GetUpdatedAt()
 	return updatedTime.Time.Format("2006-01-02T15:04:05")
 }
