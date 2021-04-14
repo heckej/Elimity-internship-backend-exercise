@@ -58,6 +58,13 @@ func validateInterval(flags flagSet) error {
 	return nil
 }
 
+func validateMinStars(flags flagSet) error {
+	if flags.minStars < 0 {
+		return errors.New("got invalid min-stars")
+	}
+	return nil
+}
+
 func parseTokenFile(flags flagSet) (string, error) {
 	if flags.tokenFilePath == "" {
 		return "", nil
@@ -68,13 +75,6 @@ func parseTokenFile(flags flagSet) (string, error) {
 		return "", usageError{message: message}
 	}
 	return token, nil
-}
-
-func validateMinStars(flags flagSet) error {
-	if flags.minStars < 0 {
-		return errors.New("got invalid min-stars")
-	}
-	return nil
 }
 
 func run() error {
