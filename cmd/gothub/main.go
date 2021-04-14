@@ -108,27 +108,25 @@ Options:
 		return nil
 
 	case "track":
-		err := parseFlags()
+		flags, err := parseFlags()
 		if err != nil {
 			return err
 		}
 
-		interval, err := parseInterval()
+		if err := parseInterval(flags); err != nil {
+			return err
+		}
+
+		if err := parseMinStars(flags); err != nil {
+			return err
+		}
+
+		token, err := parseTokenFile(flags)
 		if err != nil {
 			return err
 		}
 
-		token, err := parseTokenFile()
-		if err != nil {
-			return err
-		}
-
-		minStars, err := parseMinStars()
-		if err != nil {
-			return err
-		}
-
-		if err := internal.Track(interval, token, minStars); err != nil {
+		if err := internal.Track(flags.interval, token, flags.minStars); err != nil {
 			return fmt.Errorf("failed tracking: %v", err)
 		}
 		return nil
